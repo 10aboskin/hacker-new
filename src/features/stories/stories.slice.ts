@@ -1,6 +1,12 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {
+  PayloadAction,
+  createAsyncThunk,
+  createSelector,
+  createSlice,
+} from "@reduxjs/toolkit";
 import { getItem, getTopStories } from "./stories.service";
 
+import { RootState } from "../../store";
 import { Story } from "./stories.types";
 
 export type StoriesState = {
@@ -10,6 +16,13 @@ export type StoriesState = {
   stars: number[];
 };
 
+const initialState = {
+  storyList: [],
+  status: "idle",
+  error: undefined,
+  stars: [],
+} as StoriesState;
+
 export const getStories = createAsyncThunk("stories/getAll", async () => {
   const topStories = await getTopStories();
   const storyData = await Array.fromAsync(
@@ -18,19 +31,20 @@ export const getStories = createAsyncThunk("stories/getAll", async () => {
   return storyData;
 });
 
+export const selectStarredStories = createSelector(
+  ({ stories: { storyList, stars } }: RootState) => ({ storyList, stars }),
+  ({ storyList, stars }) =>
+    storyList.filter((story) => stars.includes(story.id))
+);
+
 export const storiesSlice = createSlice({
   name: "stories",
-  initialState: {
-    storyList: [],
-    status: "idle",
-    error: undefined,
-    stars: [],
-  } as StoriesState,
+  initialState,
   reducers: (builder) => ({
     toggleStar: builder.reducer((state, action: PayloadAction<number>) => {
       state.stars = state.stars.includes(action.payload)
         ? state.stars.filter((storyId) => storyId !== action.payload)
-        : (state.stars = [...state.stars, action.payload]);
+        : [...state.stars, action.payload];
     }),
   }),
   extraReducers: (builder) => {

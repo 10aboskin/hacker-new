@@ -1,19 +1,21 @@
-import Spinner from "../features/ui/spinner.component";
+import StoryListItem from "../features/stories/story-list-item.component";
+import { selectStarredStories } from "../features/stories/stories.slice";
 import { useAppSelector } from "../store";
 
 export const TopStoriesPage = () => {
-  const filteredStories = useAppSelector(({ stories: { storyList, stars } }) =>
-    storyList.filter((story) => stars.includes(story.id))
-  );
+  const starredStories = useAppSelector(selectStarredStories);
 
   return (
     <main className="px-24 mb-16">
-      {status === "loading" && (
-        <div className="flex justify-center">
-          <Spinner />
-        </div>
-      )}
-      {status === "succeeded" && <></>}
+      <ul>
+        {starredStories.map(
+          ({ id, title, url, by, descendants, score, time }) => (
+            <StoryListItem
+              {...{ id, title, url, score, by, time, descendants }}
+            />
+          )
+        )}
+      </ul>
     </main>
   );
 };
