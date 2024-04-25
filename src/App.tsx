@@ -53,11 +53,22 @@ function App() {
   const fetchNewsData = async () => {
     // fetch top 500
     const topStories = await getTopStories();
-    // fetching the first 12 to display
     const storyData = await Array.fromAsync(
-      topStories.slice(0, 12).map(getItem)
+      topStories.slice(0, 12).map(getItem) // fetching the first 12 to display
     );
     setStoryData(storyData);
+  };
+
+  const formatTime = (time: number) => {
+    const start = new Date(time * 1000); // mult by 1000 to convert seconds to ms
+    const end = new Date();
+    const formattedDuration = formatDuration(
+      intervalToDuration({ start, end }),
+      {
+        delimiter: ",", // give it a delimiter to split on
+      }
+    );
+    return formattedDuration.split(",")[0]; // split to get the highest magnitude value
   };
 
   return (
@@ -86,12 +97,7 @@ function App() {
                 <span className="font-bold font-mono">{title}</span>
                 <span className="ml-4 text-gray-500 text-sm">({url})</span>
                 <div className="ml-8 text-gray-500 text-sm flex items-center">
-                  <span>
-                    {score} points by {by}{" "}
-                    {formatDuration(
-                      intervalToDuration({ start: time, end: new Date() })
-                    )}
-                  </span>
+                  {score} points by {by} {formatTime(time)}
                   <span className="px-2">{"|"}</span>
                   <span>24 comments</span>
                   <span className="px-2">{"|"}</span>
