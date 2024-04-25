@@ -97,10 +97,10 @@ function App() {
         </div>
         <MoonIcon className="ml-auto h-6 w-6" />
       </header>
-      <main className="px-24">
+      <main className="px-24 mb-16">
         <ol className="list-decimal list-inside">
           {storyData.map(({ title, url, by, descendants, score, time }) => (
-            <li className="marker:text-gray-500 marker:text-lg text-xl py-4">
+            <li className="marker:text-gray-500 marker:text-lg text-xl my-8">
               <div className="inline-block ml-2">
                 <span className="font-bold font-mono">{title}</span>
                 <span className="ml-4 text-gray-500 text-xs">
@@ -126,11 +126,13 @@ function App() {
             </li>
           ))}
         </ol>
-        <button className="py-2 px-4 bg-orange text-white">show more</button>
+        <button className="py-2 px-4 bg-orange text-white font-semibold">
+          show more
+        </button>
       </main>
-      <footer className="w-full border-t-4 border-orange">
-        <h1 className="ml-4 font-semibold">Hacker News</h1>
-        <div className="ml-10 flex items-center">
+      <footer className="w-full border-t-4 border-orange h-36 flex flex-col justify-center items-center">
+        <h1 className="font-semibold mb-2">Hacker News</h1>
+        <div className="flex items-center">
           <span
             className={cn("", {
               "text-orange font-bold": selected === "latest",
