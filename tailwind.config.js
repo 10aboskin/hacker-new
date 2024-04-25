@@ -2,7 +2,14 @@
 export default {
   content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        orange: "#ff6600",
+      },
+      fontFamily: {
+        sans: ["Verdana", "Geneva", "sans-serif"],
+      },
+    },
   },
   plugins: [],
 };
