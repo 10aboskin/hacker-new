@@ -92,14 +92,14 @@ function App() {
       <main>
         <ol className="list-decimal list-inside">
           {storyData.map(
-            ({ title, url, by, descendants, id, kids, score, time, type }) => (
+            ({ title, url, by, descendants, kids, score, time }) => (
               <li className="marker:text-gray-500 text-2xl">
                 <span className="font-bold font-mono">{title}</span>
                 <span className="ml-4 text-gray-500 text-sm">({url})</span>
                 <div className="ml-8 text-gray-500 text-sm flex items-center">
                   {score} points by {by} {formatTime(time)}
                   <span className="px-2">{"|"}</span>
-                  <span>24 comments</span>
+                  <span>{descendants} comments</span>
                   <span className="px-2">{"|"}</span>
                   <span className="flex items-center">
                     <StarIcon
