@@ -1,37 +1,24 @@
-import { HTMLAttributes, PropsWithChildren, useEffect, useState } from "react";
+import {
+  HTMLAttributes,
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { formatDuration, intervalToDuration } from "date-fns";
+import { useAppDispatch, useAppSelector } from "./store";
 
 import Logo from "./assets/yCombinatorLogo.svg?react";
 import MoonIcon from "./assets/moon.svg?react";
+import Spinner from "./features/ui/spinner.component";
 import StarIcon from "./assets/star.svg?react";
-import axios from "axios";
 import clsx from "clsx";
+import { getStories } from "./features/stories/stories.slice";
 import { twMerge } from "tailwind-merge";
 
 const cn = (...inputs: Parameters<typeof clsx>) => {
   // Merge class names
   return twMerge(clsx(inputs));
-};
-
-const getUrl = (baseUrl: string) =>
-  `https://hacker-news.firebaseio.com/v0${baseUrl}.json`;
-
-const getTopStories = async () => {
-  const { data } = await axios.get<Array<number>>(getUrl("/topstories"));
-
-  return data;
-};
-
-type Story = {
-  by: string;
-  descendants: number;
-  id: number;
-  kids: number[];
-  score: number;
-  time: number;
-  title: string;
-  type: "story";
-  url: string;
 };
 
 const Link = ({
@@ -43,29 +30,19 @@ const Link = ({
   return <a className={cn("hover:underline", className)}>{children}</a>;
 };
 
-const getItem = async (itemId: number) => {
-  const { data } = await axios.get<Story>(getUrl(`/item/${itemId}`));
-
-  return data;
-};
-
 function App() {
-  const [selected, setSelected] = useState<"latest" | "starred">("latest");
+  const [selected] = useState<"latest" | "starred">("latest");
 
-  const [storyData, setStoryData] = useState<Story[]>([]);
+  const dispatch = useAppDispatch();
+  const { stories, status } = useAppSelector((state) => state.stories);
+
+  const initFetch = useCallback(() => {
+    dispatch(getStories());
+  }, [dispatch]);
 
   useEffect(() => {
-    fetchNewsData();
-  }, []);
-
-  const fetchNewsData = async () => {
-    // fetch top 500
-    const topStories = await getTopStories();
-    const storyData = await Array.fromAsync(
-      topStories.slice(0, 12).map(getItem) // fetching the first 12 to display
-    );
-    setStoryData(storyData);
-  };
+    initFetch();
+  }, [initFetch]);
 
   const formatTime = (time: number) => {
     const start = new Date(time * 1000); // mult by 1000 to convert seconds to ms
@@ -98,37 +75,49 @@ function App() {
         <MoonIcon className="ml-auto h-6 w-6" />
       </header>
       <main className="px-24 mb-16">
-        <ol className="list-decimal list-inside">
-          {storyData.map(({ title, url, by, descendants, score, time }) => (
-            <li className="marker:text-gray-500 marker:text-lg text-xl my-8">
-              <div className="inline-block ml-2">
-                <span className="font-bold font-mono">{title}</span>
-                <span className="ml-4 text-gray-500 text-xs">
-                  {url && URL.canParse(url) && `(${new URL(url).hostname})`}
-                </span>
-              </div>
-              <div className="ml-8 text-gray-500 text-xs flex items-center gap-1 mt-2">
-                <span>{score} points by</span>
-                <Link>{by}</Link>
-                <Link>{formatTime(time)} ago</Link>
-                <span>{"|"}</span>
-                <span>{descendants} comments</span>
-                <span>{"|"}</span>
-                <span className="flex items-center">
-                  <StarIcon
-                    className={cn("h-4 w-4 fill-transparent stroke-gray-500", {
-                      "fill-orange stroke-none": true,
-                    })}
-                  />
-                  <span className="ml-1">saved</span>
-                </span>
-              </div>
-            </li>
-          ))}
-        </ol>
-        <button className="py-2 px-4 bg-orange text-white font-semibold">
-          show more
-        </button>
+        {status === "loading" && (
+          <div className="flex justify-center">
+            <Spinner />
+          </div>
+        )}
+        {status === "succeeded" && (
+          <>
+            <ol className="list-decimal list-inside">
+              {stories.map(({ title, url, by, descendants, score, time }) => (
+                <li className="marker:text-gray-500 marker:text-lg text-xl my-8">
+                  <div className="inline-block ml-2">
+                    <span className="font-bold font-mono">{title}</span>
+                    <span className="ml-4 text-gray-500 text-xs">
+                      {url && URL.canParse(url) && `(${new URL(url).hostname})`}
+                    </span>
+                  </div>
+                  <div className="ml-8 text-gray-500 text-xs flex items-center gap-1 mt-2">
+                    <span>{score} points by</span>
+                    <Link>{by}</Link>
+                    <Link>{formatTime(time)} ago</Link>
+                    <span>{"|"}</span>
+                    <span>{descendants} comments</span>
+                    <span>{"|"}</span>
+                    <span className="flex items-center">
+                      <StarIcon
+                        className={cn(
+                          "h-4 w-4 fill-transparent stroke-gray-500",
+                          {
+                            "fill-orange stroke-none": true,
+                          }
+                        )}
+                      />
+                      <span className="ml-1">saved</span>
+                    </span>
+                  </div>
+                </li>
+              ))}
+            </ol>
+            <button className="py-2 px-4 bg-orange text-white font-semibold">
+              show more
+            </button>
+          </>
+        )}
       </main>
       <footer className="w-full border-t-4 border-orange h-36 flex flex-col justify-center items-center">
         <h1 className="font-semibold mb-2">Hacker News</h1>
