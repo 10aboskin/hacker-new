@@ -1,7 +1,7 @@
 import { DetailedHTMLProps } from "react";
 import cn from "../../lib/cn";
 
-export const Link = ({
+export const StoryDetailLink = ({
   className,
   children,
   ...rest
@@ -10,15 +10,10 @@ export const Link = ({
   HTMLAnchorElement
 >) => {
   return (
-    <a
-      className={cn("cursor-pointer hover:underline", className)}
-      target="_blank"
-      rel="noopener noreferrer"
-      {...rest}
-    >
+    <a className={cn("cursor-pointer hover:underline", className)} {...rest}>
       {children}
     </a>
   );
 };
 
-export default Link;
+export default StoryDetailLink;
