@@ -1,16 +1,5 @@
+import { Story } from "./stories.types";
 import axios from "axios";
-
-type Story = {
-  by: string;
-  descendants: number;
-  id: number;
-  kids: number[];
-  score: number;
-  time: number;
-  title: string;
-  type: "story";
-  url: string;
-};
 
 const getUrl = (baseUrl: string) =>
   `https://hacker-news.firebaseio.com/v0${baseUrl}.json`;

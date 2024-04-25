@@ -1,22 +1,13 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getItem, getTopStories } from "./stories.service";
 
-type Story = {
-  by: string;
-  descendants: number;
-  id: number;
-  kids: number[];
-  score: number;
-  time: number;
-  title: string;
-  type: "story";
-  url: string;
-};
+import { Story } from "./stories.types";
 
 export type StoriesState = {
-  stories: Story[];
+  storyList: Story[];
   status: string;
   error: string | undefined;
+  stars: number[];
 };
 
 export const getStories = createAsyncThunk("stories/getAll", async () => {
@@ -30,11 +21,18 @@ export const getStories = createAsyncThunk("stories/getAll", async () => {
 export const storiesSlice = createSlice({
   name: "stories",
   initialState: {
-    stories: [],
+    storyList: [],
     status: "idle",
     error: undefined,
+    stars: [],
   } as StoriesState,
-  reducers: {},
+  reducers: (builder) => ({
+    toggleStar: builder.reducer((state, action: PayloadAction<number>) => {
+      state.stars = state.stars.includes(action.payload)
+        ? state.stars.filter((storyId) => storyId !== action.payload)
+        : (state.stars = [...state.stars, action.payload]);
+    }),
+  }),
   extraReducers: (builder) => {
     builder
       .addCase(getStories.pending, (state) => {
@@ -42,8 +40,7 @@ export const storiesSlice = createSlice({
       })
       .addCase(getStories.fulfilled, (state, action) => {
         state.status = "succeeded";
-        // Add any fetched posts to the array
-        state.stories = action.payload;
+        state.storyList = action.payload;
       })
       .addCase(getStories.rejected, (state, action) => {
         state.status = "failed";
@@ -51,5 +48,7 @@ export const storiesSlice = createSlice({
       });
   },
 });
+
+export const { toggleStar } = storiesSlice.actions;
 
 export default storiesSlice.reducer;
