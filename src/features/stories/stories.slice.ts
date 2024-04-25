@@ -25,6 +25,7 @@ const initialState = {
 
 export const getStories = createAsyncThunk("stories/getAll", async () => {
   const topStories = await getTopStories();
+  // @ts-ignore tsc doesn't know about 'fromAsync' yet it seems
   const storyData = await Array.fromAsync(
     topStories.slice(0, 12).map(getItem) // fetching the first 12 to display
   );
