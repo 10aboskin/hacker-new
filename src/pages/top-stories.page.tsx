@@ -18,6 +18,7 @@ export const TopStoriesPage = () => {
             {storyList.map(
               ({ id, title, url, by, descendants, score, time }) => (
                 <StoryListItem
+                  key={id}
                   {...{ id, title, url, score, by, time, descendants }}
                 />
               )
