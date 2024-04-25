@@ -1,5 +1,5 @@
+import { HTMLAttributes, PropsWithChildren, useEffect, useState } from "react";
 import { formatDuration, intervalToDuration } from "date-fns";
-import { useEffect, useState } from "react";
 
 import Logo from "./assets/yCombinatorLogo.svg?react";
 import MoonIcon from "./assets/moon.svg?react";
@@ -34,6 +34,15 @@ type Story = {
   url: string;
 };
 
+const Link = ({
+  className,
+  children,
+}: PropsWithChildren<{
+  className?: HTMLAttributes<HTMLAnchorElement>["className"];
+}>) => {
+  return <a className={cn("hover:underline", className)}>{children}</a>;
+};
+
 const getItem = async (itemId: number) => {
   const { data } = await axios.get<Story>(getUrl(`/item/${itemId}`));
 
@@ -42,7 +51,6 @@ const getItem = async (itemId: number) => {
 
 function App() {
   const [selected, setSelected] = useState<"latest" | "starred">("latest");
-  const [mode, setMode] = useState<"light" | "dark">("light");
 
   const [storyData, setStoryData] = useState<Story[]>([]);
 
@@ -72,10 +80,10 @@ function App() {
   };
 
   return (
-    <div className="border-t-8 border-orange p-16">
+    <div className="border-t-8 border-orange py-16 px-24">
       <header className="flex items-center w-full">
         <Logo className="h-10 w-10" />
-        <h1 className="ml-4 text-3xl font-extrabold">Hacker News</h1>
+        <h1 className="ml-4 text-2xl font-extrabold">Hacker News</h1>
         <div className="ml-10 flex items-center">
           <span
             className={cn("", {
@@ -89,40 +97,39 @@ function App() {
         </div>
         <MoonIcon className="ml-auto h-6 w-6" />
       </header>
-      <main>
+      <main className="py-16">
         <ol className="list-decimal list-inside">
-          {storyData.map(
-            ({ title, url, by, descendants, kids, score, time }) => (
-              <li className="marker:text-gray-500 text-2xl">
+          {storyData.map(({ title, url, by, descendants, score, time }) => (
+            <li className="marker:text-gray-500 marker:text-lg text-xl p-4">
+              <div className="inline-block mb-2">
                 <span className="font-bold font-mono">{title}</span>
-                <span className="ml-4 text-gray-500 text-sm">({url})</span>
-                <div className="ml-8 text-gray-500 text-sm flex items-center">
-                  {score} points by {by} {formatTime(time)}
-                  <span className="px-2">{"|"}</span>
-                  <span>{descendants} comments</span>
-                  <span className="px-2">{"|"}</span>
-                  <span className="flex items-center">
-                    <StarIcon
-                      className={cn(
-                        "h-4 w-4 fill-transparent stroke-gray-500",
-                        {
-                          "fill-orange stroke-none": true,
-                        }
-                      )}
-                    />
-                    <span className="ml-1">saved</span>
-                  </span>
-                </div>
-              </li>
-            )
-          )}
+                <span className="ml-4 text-gray-500 text-xs">
+                  {url && URL.canParse(url) && `(${new URL(url).hostname})`}
+                </span>
+              </div>
+              <div className="ml-8 text-gray-500 text-xs flex items-center gap-1 mt-2">
+                <span>{score} points by</span>
+                <Link>{by}</Link>
+                <Link>{formatTime(time)} ago</Link>
+                <span>{"|"}</span>
+                <span>{descendants} comments</span>
+                <span>{"|"}</span>
+                <span className="flex items-center">
+                  <StarIcon
+                    className={cn("h-4 w-4 fill-transparent stroke-gray-500", {
+                      "fill-orange stroke-none": true,
+                    })}
+                  />
+                  <span className="ml-1">saved</span>
+                </span>
+              </div>
+            </li>
+          ))}
         </ol>
-        <button className="py-2 px-4 bg-orange text-white text-lg">
-          show more
-        </button>
+        <button className="py-2 px-4 bg-orange text-white">show more</button>
       </main>
       <footer className="w-full border-t-4 border-orange">
-        <h1 className="ml-4 text-lg font-semibold">Hacker News</h1>
+        <h1 className="ml-4 font-semibold">Hacker News</h1>
         <div className="ml-10 flex items-center">
           <span
             className={cn("", {
