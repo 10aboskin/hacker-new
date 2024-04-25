@@ -80,8 +80,8 @@ function App() {
   };
 
   return (
-    <div className="border-t-8 border-orange py-16 px-24">
-      <header className="flex items-center w-full">
+    <>
+      <header className="flex items-center w-full px-24 border-t-8 border-orange h-36">
         <Logo className="h-10 w-10" />
         <h1 className="ml-4 text-2xl font-extrabold">Hacker News</h1>
         <div className="ml-10 flex items-center">
@@ -97,11 +97,11 @@ function App() {
         </div>
         <MoonIcon className="ml-auto h-6 w-6" />
       </header>
-      <main className="py-16">
+      <main className="px-24">
         <ol className="list-decimal list-inside">
           {storyData.map(({ title, url, by, descendants, score, time }) => (
-            <li className="marker:text-gray-500 marker:text-lg text-xl p-4">
-              <div className="inline-block mb-2">
+            <li className="marker:text-gray-500 marker:text-lg text-xl py-4">
+              <div className="inline-block ml-2">
                 <span className="font-bold font-mono">{title}</span>
                 <span className="ml-4 text-gray-500 text-xs">
                   {url && URL.canParse(url) && `(${new URL(url).hostname})`}
@@ -142,7 +142,7 @@ function App() {
           <span className="">starred</span>
         </div>
       </footer>
-    </div>
+    </>
   );
 }
 
