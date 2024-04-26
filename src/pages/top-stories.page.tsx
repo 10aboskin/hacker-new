@@ -15,14 +15,9 @@ export const TopStoriesPage = () => {
       {status === "succeeded" && (
         <>
           <ol className="list-decimal list-inside">
-            {storyList.map(
-              ({ id, title, url, by, descendants, score, time }) => (
-                <StoryListItem
-                  key={id}
-                  {...{ id, title, url, score, by, time, descendants }}
-                />
-              )
-            )}
+            {storyList.map((story) => (
+              <StoryListItem key={story.id} story={story} />
+            ))}
           </ol>
           <button className="py-2 px-4 bg-orange text-white font-semibold">
             show more
