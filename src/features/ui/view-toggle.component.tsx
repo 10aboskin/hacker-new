@@ -1,32 +1,30 @@
+import { HTMLAttributes, PropsWithChildren } from "react";
 import { Link, useLocation } from "react-router-dom";
 
-import { HTMLAttributes } from "react";
 import cn from "../../lib/cn";
 
 export const ViewToggle = ({ className }: HTMLAttributes<HTMLDivElement>) => {
   const { pathname } = useLocation();
 
+  const ViewLink = ({ to, children }: PropsWithChildren<{ to: string }>) => {
+    return (
+      <Link
+        to={to}
+        className={cn(" w-24 text-center tracking-widest", {
+          "cursor-pointer": pathname !== to,
+          "text-orange font-extrabold": pathname === to,
+        })}
+      >
+        {children}
+      </Link>
+    );
+  };
+
   return (
-    <div className={cn("flex items-center", className)}>
-      <Link
-        to="/"
-        className={cn("w-20 text-center", {
-          "cursor-pointer": pathname !== "/",
-          "text-orange font-bold": pathname === "/",
-        })}
-      >
-        latest
-      </Link>
+    <div className={cn("flex items-baseline", className)}>
+      <ViewLink to="/">latest</ViewLink>
       <span>{"|"}</span>
-      <Link
-        to={"/starred"}
-        className={cn("w-20 text-center", {
-          "cursor-pointer": pathname !== "/starred",
-          "text-orange font-bold": pathname === "/starred",
-        })}
-      >
-        starred
-      </Link>
+      <ViewLink to={"/starred"}>starred</ViewLink>
     </div>
   );
 };
