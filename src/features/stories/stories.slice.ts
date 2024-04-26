@@ -1,10 +1,11 @@
+import * as StoriesService from "./stories.api";
+
 import {
   PayloadAction,
   createAsyncThunk,
   createSelector,
   createSlice,
 } from "@reduxjs/toolkit";
-import { getItem, getTopStories } from "./stories.service";
 
 import { RootState } from "../../store";
 import { Story } from "./stories.types";
@@ -23,19 +24,17 @@ const initialState = {
   stars: [],
 } as StoriesState;
 
-export const getStories = createAsyncThunk("stories/getAll", async () => {
-  const topStories = await getTopStories();
-  // @ts-ignore tsc doesn't know about 'fromAsync' yet it seems
-  const storyData = await Array.fromAsync(
-    topStories.slice(0, 12).map(getItem) // fetching the first 12 to display
-  );
-  return storyData;
-});
+export const selectStoryList = (state: RootState) => state.stories.storyList;
+export const selectStars = (state: RootState) => state.stories.stars;
 
 export const selectStarredStories = createSelector(
-  ({ stories: { storyList, stars } }: RootState) => ({ storyList, stars }),
-  ({ storyList, stars }) =>
-    storyList.filter((story) => stars.includes(story.id))
+  [selectStoryList, selectStars],
+  (storyList, stars) => storyList.filter((story) => stars.includes(story.id))
+);
+
+export const getStories = createAsyncThunk(
+  "stories/getStories",
+  StoriesService.getStories
 );
 
 export const storiesSlice = createSlice({
