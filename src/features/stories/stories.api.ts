@@ -17,7 +17,8 @@ export const getStory = async (itemId: number) => {
 };
 
 export const getStoryList = async (storyIds: number[]) => {
-  // @ts-espect-error tsc doesn't know about 'fromAsync' yet i think
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore tsc doesn't know about 'fromAsync' yet i think
   return await Array.fromAsync(storyIds.map(getStory));
 };
 
