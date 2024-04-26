@@ -48,11 +48,19 @@ export const TopStoriesPage = () => {
         <option value="most">Most Points</option>
         <option value="least">Least Points</option>
       </select>
-      <ul>
-        {sortedStories.map((story) => (
-          <StoryListItem key={story.id} story={story} />
-        ))}
-      </ul>
+      {sortedStories.length ? (
+        <ul>
+          {sortedStories.map((story) => (
+            <StoryListItem key={story.id} story={story} />
+          ))}
+        </ul>
+      ) : (
+        <div className="flex items-center justify-center">
+          <div className="text-2xl font-extrabold text-neutral-500">
+            No Starred Posts
+          </div>
+        </div>
+      )}
     </main>
   );
 };
