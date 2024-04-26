@@ -15,9 +15,17 @@ export const TopStoriesPage = () => {
       {status === "succeeded" && (
         <>
           <ol className="list-decimal list-inside">
-            {storyList.map((story) => (
-              <StoryListItem key={story.id} story={story} />
-            ))}
+            {storyList.map((story) =>
+              story !== null ? (
+                <StoryListItem key={story.id} story={story} />
+              ) : (
+                <li className="marker:text-gray-500 marker:text-lg my-8">
+                  <span className="text-gray-500 font-extrabold ml-2">
+                    Post Removed
+                  </span>
+                </li>
+              )
+            )}
           </ol>
           <button className="py-2 px-4 bg-orange text-white font-semibold">
             show more
