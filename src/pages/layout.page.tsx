@@ -20,7 +20,9 @@ export const Layout = () => {
   return (
     <>
       <Header />
-      <Outlet />
+      <main className="px-24 mb-16">
+        <Outlet />
+      </main>
       <Footer />
     </>
   );

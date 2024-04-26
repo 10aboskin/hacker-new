@@ -11,23 +11,17 @@ export const TopStoriesPage = () => {
   const status = useAppSelector(selectStatus);
   const storyList = useAppSelector(selectStoryList);
 
-  return (
-    <main className="px-24 mb-16">
-      {status === "loading" && (
-        <div className="flex justify-center">
-          <Spinner />
-        </div>
-      )}
-      {status === "succeeded" && (
-        <>
-          <StoryList storyList={storyList} />
-          <button className="py-2 px-4 bg-orange text-white font-semibold">
-            show more
-          </button>
-        </>
-      )}
-    </main>
-  );
+  if (status === "loading") return <Spinner />;
+
+  if (status === "succeeded")
+    return (
+      <>
+        <StoryList storyList={storyList} />
+        <button className="py-2 px-4 bg-orange text-white font-semibold">
+          show more
+        </button>
+      </>
+    );
 };
 
 export default TopStoriesPage;
