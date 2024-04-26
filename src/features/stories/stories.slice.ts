@@ -11,7 +11,7 @@ import { RootState } from "../../store";
 import { Story } from "./stories.types";
 
 export type StoriesState = {
-  storyList: Story[];
+  storyList: (Story | null)[];
   status: string;
   error: string | undefined;
   stars: number[];
@@ -26,10 +26,16 @@ const initialState = {
 
 export const selectStoryList = (state: RootState) => state.stories.storyList;
 export const selectStars = (state: RootState) => state.stories.stars;
+export const selectStatus = (state: RootState) => state.stories.status;
+export const selectIsStarred = (state: RootState, storyId: number) =>
+  state.stories.stars.includes(storyId);
 
 export const selectStarredStories = createSelector(
   [selectStoryList, selectStars],
-  (storyList, stars) => storyList.filter((story) => stars.includes(story.id))
+  (storyList, stars) =>
+    storyList.filter(
+      (story): story is Story => story !== null && stars.includes(story.id)
+    )
 );
 
 export const getStories = createAsyncThunk(

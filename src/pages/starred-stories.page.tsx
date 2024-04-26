@@ -2,7 +2,7 @@ import { compareAsc, compareDesc } from "date-fns";
 import { useMemo, useState } from "react";
 
 import { Story } from "../features/stories/stories.types";
-import StoryListItem from "../features/stories/story-list-item.component";
+import StoryList from "../features/stories/story-list.component";
 import { getDateFromTimestamp } from "../lib/datetime";
 import { selectStarredStories } from "../features/stories/stories.slice";
 import { useAppSelector } from "../store";
@@ -49,11 +49,7 @@ export const TopStoriesPage = () => {
         <option value="least">Least Points</option>
       </select>
       {sortedStories.length ? (
-        <ul>
-          {sortedStories.map((story) => (
-            <StoryListItem key={story.id} story={story} />
-          ))}
-        </ul>
+        <StoryList storyList={sortedStories} numbered={false} />
       ) : (
         <div className="flex items-center justify-center">
           <div className="text-2xl font-extrabold text-neutral-500">

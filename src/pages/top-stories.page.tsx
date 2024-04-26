@@ -1,9 +1,15 @@
+import {
+  selectStatus,
+  selectStoryList,
+} from "../features/stories/stories.slice";
+
 import Spinner from "../features/ui/spinner.component";
-import StoryListItem from "../features/stories/story-list-item.component";
+import StoryList from "../features/stories/story-list.component";
 import { useAppSelector } from "../store";
 
 export const TopStoriesPage = () => {
-  const { storyList, status } = useAppSelector((state) => state.stories);
+  const status = useAppSelector(selectStatus);
+  const storyList = useAppSelector(selectStoryList);
 
   return (
     <main className="px-24 mb-16">
@@ -14,19 +20,7 @@ export const TopStoriesPage = () => {
       )}
       {status === "succeeded" && (
         <>
-          <ol className="list-decimal list-inside">
-            {storyList.map((story) =>
-              story !== null ? (
-                <StoryListItem key={story.id} story={story} />
-              ) : (
-                <li className="marker:text-gray-500 marker:text-lg my-8">
-                  <span className="text-gray-500 font-extrabold ml-2">
-                    Post Removed
-                  </span>
-                </li>
-              )
-            )}
-          </ol>
+          <StoryList storyList={storyList} />
           <button className="py-2 px-4 bg-orange text-white font-semibold">
             show more
           </button>

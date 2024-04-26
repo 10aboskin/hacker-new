@@ -1,3 +1,4 @@
+import { selectIsStarred, toggleStar } from "./stories.slice";
 import { useAppDispatch, useAppSelector } from "../../store";
 
 import StarIcon from "../../assets/star.svg?react";
@@ -5,8 +6,6 @@ import { Story } from "./stories.types";
 import StoryDetailLink from "../ui/link.component";
 import cn from "../../lib/cn";
 import formatTime from "../../lib/datetime";
-import { toggleStar } from "./stories.slice";
-import { useMemo } from "react";
 
 type Props = {
   story: Story;
@@ -16,8 +15,7 @@ export const StoryListItem = ({
   story: { id, title, url, score, by, time, descendants },
 }: Props) => {
   const dispatch = useAppDispatch();
-  const { stars } = useAppSelector((state) => state.stories);
-  const isStarred = useMemo(() => stars.includes(id), [id, stars]);
+  const isStarred = useAppSelector((state) => selectIsStarred(state, id));
 
   return (
     <li className="marker:text-gray-500 marker:text-lg text-xl my-8">
